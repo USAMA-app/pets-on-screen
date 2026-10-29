@@ -1,0 +1,102 @@
+[
+ {
+  "id": "tree-animate-f0f9",
+  "kind": "tree",
+  "name": "Tree Animate",
+  "file": "garden/tree-animate-f0f9.glb",
+  "author": "Node_λrt",
+  "url": "https://sketchfab.com/3d-models/tree-animate-f0f9eb5e6c104bbb8e1f41c97019e6f2",
+  "license": "CC Attribution",
+  "animations": 1
+ },
+ {
+  "id": "maple-tree-4b27",
+  "kind": "tree",
+  "name": "Maple tree",
+  "file": "garden/maple-tree-4b27.glb",
+  "author": "atrodler",
+  "url": "https://sketchfab.com/3d-models/maple-tree-4b27adcf92f644bdabf8ecc6c5bef399",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "tree-1d26",
+  "kind": "tree",
+  "name": "Tree",
+  "file": "garden/tree-1d26.glb",
+  "author": "DJMaesen",
+  "url": "https://sketchfab.com/3d-models/tree-1d26dcc1af0c4a06a95c459b7ca4cf6f",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "coconut-palm-26e7",
+  "kind": "palm",
+  "name": "Coconut Palm",
+  "file": "garden/coconut-palm-26e7.glb",
+  "author": "evolveduk",
+  "url": "https://sketchfab.com/3d-models/coconut-palm-26e787f2ff2e4c0fb004c3b0210805a3",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "banana-plant-bcee",
+  "kind": "palm",
+  "name": "Banana Plant",
+  "file": "garden/banana-plant-bcee.glb",
+  "author": "Coffeek",
+  "url": "https://sketchfab.com/3d-models/banana-plant-bcee47f9119f46a1a758064690f21941",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "real-bush-6261",
+  "kind": "bush",
+  "name": "Real Bush",
+  "file": "garden/real-bush-6261.glb",
+  "author": "Marbles studio",
+  "url": "https://sketchfab.com/3d-models/real-bush-62618c3260b142cfb7ef499d75a8d21a",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "plant-bush-42cb",
+  "kind": "bush",
+  "name": "Plant Bush",
+  "file": "garden/plant-bush-42cb.glb",
+  "author": "Batuhan13",
+  "url": "https://sketchfab.com/3d-models/plant-bush-42cb7fad10ba44ecbc9ae9cf5fdd63b6",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "realistics-grass-06-b595",
+  "kind": "grass",
+  "name": "Realistics grass 06",
+  "file": "garden/realistics-grass-06-b595.glb",
+  "author": "POLYSCAN",
+  "url": "https://sketchfab.com/3d-models/realistics-grass-06-b5956b7d4d1f4ff6ae1dd1320dab0d12",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "flower-0a0f",
+  "kind": "flower",
+  "name": "Flower",
+  "file": "garden/flower-0a0f.glb",
+  "author": "alexerhart",
+  "url": "https://sketchfab.com/3d-models/flower-0a0f5b4e595940649ea3cabeb7a4b1e1",
+  "license": "CC Attribution",
+  "animations": 0
+ },
+ {
+  "id": "some-foliage-5e80",
+  "kind": "bush",
+  "name": "Some Foliage",
+  "file": "garden/some-foliage-5e80.glb",
+  "author": "soidev",
+  "url": "https://sketchfab.com/3d-models/some-foliage-5e806681504a4642a16a59c057d34e8d",
+  "license": "CC Attribution",
+  "animations": 0
+ }
+]

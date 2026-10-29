@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pets On Screen</title>
+<style>
+  :root { --bg: #f5f6f8; --card: #fff; --text: #1d1f23; --muted: #6b7079; --line: #e3e5ea; --accent: #e0612f; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #17181b; --card: #222428; --text: #eceef1; --muted: #9aa0a9; --line: #33363c; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px 24px 40px; background: var(--bg); color: var(--text); font: 14px "Segoe UI", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  h2 { margin: 26px 0 10px; font-size: 16px; }
+  .muted { color: var(--muted); }
+  .mine { display: grid; gap: 8px; }
+  .row { display: grid; grid-template-columns: 56px 1fr 180px auto; gap: 12px; align-items: center; background: var(--card);
+         border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+  .row img { width: 56px; height: 40px; object-fit: cover; border-radius: 6px; }
+  .row input[type=text] { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; width: 100%; }
+  .tabs { display: flex; gap: 6px; margin: 10px 0 12px; }
+  .tabs button { font: inherit; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: inherit; cursor: pointer; }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+  .card .body { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .card .name { font-weight: 600; }
+  .card small { color: var(--muted); }
+  .card small a { color: inherit; }
+  button.go { font: inherit; margin-top: auto; padding: 7px; border: 0; border-radius: 7px; background: var(--accent); color: #fff; cursor: pointer; }
+  button.ghost { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Pets On Screen</h1>
+<div class="muted">Adopt as many pets as you like. They live on top of your taskbar; right-click one for its menu.</div>
+
+<h2>My pets</h2>
+<div class="mine" id="mine"></div>
+
+<h2>Adopt a pet</h2>
+<div class="tabs" id="tabs"></div>
+<div class="grid" id="grid"></div>
+
+<script>
+  const KINDS = { cat: 'Cats', dog: 'Dogs', bird: 'Birds & flyers' };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const shortName = name => name.replace(/\(.*?\)|animated|rigged|from .*|ver .*|[-–].*|\d+(\.\d+)*|3d model|high-quality|quirky series|_/gi, ' ')
+                                .replace(/\s+/g, ' ').trim() || 'Pet';
+  let catalog = [], kind = 'cat';
+
+  function renderMine(pets) {
+    const byId = Object.fromEntries(catalog.map(e => [e.id, e]));
+    document.getElementById('mine').innerHTML = pets.length ? pets.map(p => `
+      <div class="row" data-id="${p.id}">
+        <img src="models/${esc(byId[p.model]?.thumb || '')}">
+        <input type="text" value="${esc(p.name)}" maxlength="24" aria-label="Name">
+        <label class="muted">Size <input type="range" min="0.6" max="1.6" step="0.1" value="${p.size || 1}"></label>
+        <button class="ghost">Send home</button>
+      </div>`).join('') : '<div class="muted">No pets yet. Adopt one below.</div>';
+    for (const row of document.querySelectorAll('.row')) {
+      const id = row.dataset.id;
+      row.querySelector('input[type=text]').onchange = e => window.pets.update({ id, name: e.target.value.trim() || 'Pet' });
+      row.querySelector('input[type=range]').onchange = e => window.pets.update({ id, size: +e.target.value });
+      row.querySelector('button').onclick = () => window.pets.remove(id);
+    }
+  }
+
+  function renderGrid() {
+    document.getElementById('tabs').innerHTML = Object.entries(KINDS).map(([k, label]) =>
+      `<button class="${k === kind ? 'on' : ''}" data-k="${k}">${label}</button>`).join('');
+    for (const b of document.querySelectorAll('.tabs button')) b.onclick = () => { kind = b.dataset.k; renderGrid(); };
+    document.getElementById('grid').innerHTML = catalog.filter(e => e.kind === kind).map(e => `
+      <div class="card">
+        <img src="models/${esc(e.thumb)}" alt="">
+        <div class="body">
+          <span class="name">${esc(e.name)}</span>
+          <small>${Object.keys(e.anims || {}).length} actions &middot; ${e.license.includes('NonCommercial') ? 'personal use only' : esc(e.license)}</small>
+          <small>by <a href="${esc(e.url)}" target="_blank">${esc(e.author)}</a></small>
+          <button class="go" data-id="${e.id}">Adopt</button>
+        </div>
+      </div>`).join('');
+    for (const b of document.querySelectorAll('button.go')) {
+      b.onclick = () => {
+        const e = catalog.find(x => x.id === b.dataset.id);
+        window.pets.add({ model: e.id, name: shortName(e.name) });
+        b.textContent = 'Adopted!';
+        setTimeout(() => { b.textContent = 'Adopt'; }, 1200);
+      };
+    }
+  }
+
+  (async () => {
+    catalog = await window.pets.catalog();
+    renderGrid();
+    renderMine(await window.pets.list());
+    window.pets.onPets(renderMine);
+  })();
+</script>
+</body>
+</html>

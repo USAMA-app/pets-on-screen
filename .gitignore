@@ -1,0 +1,7 @@
+node_modules/
+# Third-party models and their thumbnails: fetched with tools/fetch_models.py
+models/**/*.glb
+models/**/*.jpg
+__pycache__/
+# local saves from the old 2D version (pet.py)
+/pets.json

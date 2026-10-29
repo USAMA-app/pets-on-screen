@@ -1,0 +1,583 @@
+[
+ {
+  "id": "01-somali-cat-animated-ver-1-2",
+  "kind": "cat",
+  "name": "Somali Cat Animated ver 1.2",
+  "file": "cat/01-somali-cat-animated-ver-1-2.glb",
+  "thumb": "cat/01-somali-cat-animated-ver-1-2.jpg",
+  "author": "DreamNoms",
+  "authorUrl": "https://sketchfab.com/DreamNoms",
+  "url": "https://sketchfab.com/3d-models/somali-cat-animated-ver-12-e185c3fd92b64c32b4515a32b29252fc",
+  "license": "CC Attribution",
+  "animations": 5,
+  "height": 120,
+  "anims": {
+   "idle": "Idle",
+   "walk": "WalkClean",
+   "sitDown": "SitDown",
+   "sit": "SittingIdle",
+   "standUp": "StandUp"
+  },
+  "hide": [
+   "Object_54"
+  ],
+  "yaw": 3.14159
+ },
+ {
+  "id": "02-tuxedo-cat-animated-2-0",
+  "kind": "cat",
+  "name": "Tuxedo Cat Animated 2.0",
+  "file": "cat/02-tuxedo-cat-animated-2-0.glb",
+  "thumb": "cat/02-tuxedo-cat-animated-2-0.jpg",
+  "author": "DreamNoms",
+  "authorUrl": "https://sketchfab.com/DreamNoms",
+  "url": "https://sketchfab.com/3d-models/tuxedo-cat-animated-20-783fcb78b55b4394a212c2b6392e1113",
+  "license": "CC Attribution",
+  "animations": 6,
+  "height": 120,
+  "anims": {
+   "idle": "IdleNorm",
+   "look": "IdleTailSwoosh",
+   "walk": "WalkCycle",
+   "sitDown": "SitDown",
+   "sit": "IdleSit",
+   "standUp": "StandUp"
+  }
+ },
+ {
+  "id": "03-little-cat",
+  "kind": "cat",
+  "name": "Little Cat",
+  "file": "cat/03-little-cat.glb",
+  "thumb": "cat/03-little-cat.jpg",
+  "author": "Southport Art Studio",
+  "authorUrl": "https://sketchfab.com/SouthportArtStudio",
+  "url": "https://sketchfab.com/3d-models/little-cat-1e6f360989b04b53a393f398d5372205",
+  "license": "Free Standard",
+  "animations": 10,
+  "height": 110,
+  "anims": {
+   "idle": "02_Idle_LittleFriends",
+   "walk": "03_Walk_LittleFriends",
+   "run": "04_Run_LittleFriends",
+   "jump": "05_Jump_LittleFriends",
+   "greet": "06_Greeting_LittleFriends",
+   "eat": "07_Eat_LittleFriends",
+   "lie": [
+    "09_Sleep02_LittleFriends",
+    "08_Sleep01_LittleFriends",
+    "10_Sleep03_LittleFriends"
+   ]
+  }
+ },
+ {
+  "id": "05-cute-little-kitty",
+  "kind": "cat",
+  "name": "Cute Little Kitty",
+  "file": "cat/05-cute-little-kitty.glb",
+  "thumb": "cat/05-cute-little-kitty.jpg",
+  "author": "Diskette96",
+  "authorUrl": "https://sketchfab.com/diskette96",
+  "url": "https://sketchfab.com/3d-models/cute-little-kitty-4f9683c841424010aaeb36b069025667",
+  "license": "CC Attribution",
+  "animations": 3,
+  "height": 110,
+  "anims": {
+   "idle": "Sitting",
+   "sit": "Sitting",
+   "walk": "Walk",
+   "lie": "Sleeping"
+  }
+ },
+ {
+  "id": "06-a-kitten-in-a-boot",
+  "kind": "cat",
+  "name": "A Kitten in a boot",
+  "file": "cat/06-a-kitten-in-a-boot.glb",
+  "thumb": "cat/06-a-kitten-in-a-boot.jpg",
+  "author": "IMAKTeck-3D",
+  "authorUrl": "https://sketchfab.com/Lynda.Tinhinane",
+  "url": "https://sketchfab.com/3d-models/a-kitten-in-a-boot-e411fbcf7a5f48daa2943e6904ab48a9",
+  "license": "CC Attribution",
+  "animations": 11,
+  "exclude": true
+ },
+ {
+  "id": "07-puma-from-cotw-game",
+  "kind": "cat",
+  "name": "Puma from COTW game",
+  "file": "cat/07-puma-from-cotw-game.glb",
+  "thumb": "cat/07-puma-from-cotw-game.jpg",
+  "author": "Game-animal ripper",
+  "authorUrl": "https://sketchfab.com/game-ripper",
+  "url": "https://sketchfab.com/3d-models/puma-from-cotw-game-984b3a6eec17444a99c5c0a8171de844",
+  "license": "CC Attribution-NonCommercial",
+  "animations": 90,
+  "height": 170,
+  "sounds": [
+   "Mrrrow",
+   "*chirp*",
+   "Prrrr..."
+  ],
+  "anims": {
+   "idle": "Armature|idle pose",
+   "look": [
+    "Armature|idle alerted",
+    "Armature|idle_alerted_hear",
+    "Armature|idle_alerted_look",
+    "Armature|idle_smell_air"
+   ],
+   "walk": "Armature|walk_fwd",
+   "trot": "Armature|trot_fwd",
+   "run": "Armature|run_fwd",
+   "sneak": "Armature|sneak_fwd",
+   "crouch": "Armature|low_staticpose",
+   "pounce": "Armature|low_pose_to_jump_fwd_01",
+   "attack": "Armature|attack_fwd",
+   "swat": [
+    "Armature|attack_close_lft",
+    "Armature|attack_close_rgt"
+   ],
+   "jump": "Armature|idle_pose_to_jump_135_lft",
+   "lie": "Armature|idle_rest_staticpose",
+   "groom": [
+    "Armature|idle_rest_grooming",
+    "Armature|idle_rest_lick_paw",
+    "Armature|idle_grooming"
+   ],
+   "yawn": "Armature|dle_rest_yawn",
+   "stretch": "Armature|idle_stretching",
+   "shake": "Armature|idle_shake",
+   "eat": "Armature|idle_eat",
+   "drink": "Armature|idle_drink",
+   "hiss": "Armature|aggressive_roar",
+   "held": "Armature|idle alerted",
+   "land": "Armature|mantle_down"
+  }
+ },
+ {
+  "id": "22-sphynx-cat",
+  "kind": "cat",
+  "name": "Sphynx Cat",
+  "file": "cat/22-sphynx-cat.glb",
+  "thumb": "cat/22-sphynx-cat.jpg",
+  "author": "Animal Animator",
+  "authorUrl": "https://sketchfab.com/animalanimator",
+  "url": "https://sketchfab.com/3d-models/sphynx-cat-rigged-animated-10-anims-0b86bde7a8b64fd7a459035b339a790f",
+  "license": "CC Attribution",
+  "animations": 12,
+  "height": 180,
+  "anims": {
+   "idle": "Cat_Idle",
+   "walk": "Cat_Walk",
+   "trot": "Cat_Trot",
+   "run": "Cat_Gallop_Run",
+   "jump": "Cat_Leap_Jump",
+   "held": "Cat_Swim",
+   "sneak": "Cat_Stalk_Hunt",
+   "hiss": "Cat_Hiss_Defensive",
+   "pounce": "Cat_Pounce_Attack",
+   "groom": "Cat_Lick_Paw",
+   "swat": "Cat_Bite_Attack"
+  }
+ },
+ {
+  "id": "08-animated-dog-shiba-inu",
+  "kind": "dog",
+  "name": "Animated Dog, Shiba Inu",
+  "file": "dog/08-animated-dog-shiba-inu.glb",
+  "thumb": "dog/08-animated-dog-shiba-inu.jpg",
+  "author": "quander",
+  "authorUrl": "https://sketchfab.com/quander",
+  "url": "https://sketchfab.com/3d-models/animated-dog-shiba-inu-9abfce885a834399b2c3ccaed51cd474",
+  "license": "CC Attribution",
+  "animations": 5,
+  "height": 120,
+  "anims": {
+   "idle": "0|standing_0",
+   "sit": "0|sitting_0",
+   "rollover": "0|rollover_0",
+   "playdead": "0|play_dead_0",
+   "shake": "0|shake_0"
+  }
+ },
+ {
+  "id": "09-labrador-dog-from-cotw-game",
+  "kind": "dog",
+  "name": "Labrador dog from COTW game.",
+  "file": "dog/09-labrador-dog-from-cotw-game.glb",
+  "thumb": "dog/09-labrador-dog-from-cotw-game.jpg",
+  "author": "Game-animal ripper",
+  "authorUrl": "https://sketchfab.com/game-ripper",
+  "url": "https://sketchfab.com/3d-models/labrador-dog-from-cotw-game-e2e5d0c611fb40cbb2b4883e38916cac",
+  "license": "CC Attribution-NonCommercial",
+  "animations": 107,
+  "height": 165,
+  "anims": {
+   "idle": "Armature|labrador_idle_rest_pose_01",
+   "look": [
+    "Armature|labrador_idle_one_off_smell_air_01",
+    "Armature|labrador_idle_sniff_one_off_01",
+    "Armature|labrador_idle_one_off_shuffle_turn_lft_01"
+   ],
+   "walk": "Armature|labrador_walk_fwd_01",
+   "sniffWalk": "Armature|labrador_walk_fwd_sniff_01",
+   "trot": "Armature|labrador_trot_fwd_01",
+   "run": "Armature|labrador_run_fwd_01",
+   "sitDown": "Armature|labrador_idle_to_idle_sit_01",
+   "sit": "Armature|labrador_idle_sit_pose_01",
+   "sitFidget": [
+    "Armature|labrador_idle_sit_one_off_scratch_01",
+    "Armature|labrador_idle_sit_one_off_step_01"
+   ],
+   "standUp": "Armature|labrador_idle_sit_to_idle_01",
+   "lieDown": "Armature|labrador_idle_to_idle_lay_01",
+   "lie": "Armature|labrador_idle_lay_pose_01",
+   "lieFidget": [
+    "Armature|labrador_idle_lay_one_off_01",
+    "Armature|labrador_idle_lay_one_off_02"
+   ],
+   "getUp": "Armature|labrador_idle_lay_to_idle_01",
+   "sleep": "Armature|labrador_interact_bed_sleep_exist_01",
+   "bark": "Armature|labrador_idle_bark_04_warning",
+   "dig": "Armature|labrador_idle_one_off_dig_01",
+   "shake": [
+    "Armature|labrador_idle_shake_01",
+    "Armature|labrador_idle_shake_02"
+   ],
+   "sniff": "Armature|labrador_idle_sniff_01",
+   "pickup": "Armature|labrador_idle_retrieve_01",
+   "drop": "Armature|labrador_idle_drop_01",
+   "trotCarry": "Armature|labrador_trot_carry_01",
+   "runCarry": "Armature|labrador_run_carry_01",
+   "paw": "Armature|labrador_interact_elmer_trick_paw_01",
+   "petted": "Armature|labrador_interact_elmer_pet_01",
+   "jump": "Armature|labrador_idle_pose_to_jump_fwd_01",
+   "held": "Armature|labrador_swim_fwd_01"
+  }
+ },
+ {
+  "id": "10-pitbull",
+  "kind": "dog",
+  "name": "PitBull",
+  "file": "dog/10-pitbull.glb",
+  "thumb": "dog/10-pitbull.jpg",
+  "author": "Joseph AYYAD",
+  "authorUrl": "https://sketchfab.com/Joseph.AD",
+  "url": "https://sketchfab.com/3d-models/pitbull-2be37d5b9f754ed4bcc2d8f41b23a1d7",
+  "license": "CC Attribution",
+  "animations": 8,
+  "height": 140,
+  "anims": {
+   "idle": "Armature.008|IDdle",
+   "walk": "Armature.008|Walkl",
+   "run": "Armature.008|Run",
+   "sitDown": "Armature.008|Sit",
+   "standUp": "Armature.008|Stand up",
+   "bark": "Armature.008|Bark",
+   "eat": "Armature.008|Eat"
+  }
+ },
+ {
+  "id": "11-animated-pitbull-dog",
+  "kind": "dog",
+  "name": "animated Pitbull dog",
+  "file": "dog/11-animated-pitbull-dog.glb",
+  "thumb": "dog/11-animated-pitbull-dog.jpg",
+  "author": "Game-animal ripper",
+  "authorUrl": "https://sketchfab.com/game-ripper",
+  "url": "https://sketchfab.com/3d-models/animated-pitbull-dog-2a403e6e80c346f0a1f8d6dcdc58882c",
+  "license": "CC Attribution-NonCommercial",
+  "animations": 119,
+  "height": 150,
+  "anims": {
+   "idle": "idle 50",
+   "look": [
+    "idle sniff air 271",
+    "idle_sniff_one_off 83",
+    "idle_one_off_shuffle_turn_lft 122"
+   ],
+   "walk": "walk_fwd 29",
+   "sniffWalk": "walk_fwd_sniff 46",
+   "trot": "trot_fwd 17",
+   "run": "run_fwd 13",
+   "sitDown": "idle_to_idle_sit 57",
+   "sit": "idle_sit_pose 2",
+   "sitFidget": [
+    "idle_sit_one_off_scratch 176",
+    "idle_sit_one_off_step_1. 119"
+   ],
+   "standUp": "idle_sit_to_idle 56",
+   "lieDown": "idle_to_idle_lay 111",
+   "lie": "idle_lay_pose 2",
+   "lieFidget": [
+    "idle_lay_one_off_02 .201",
+    "idle_lay_one_off_1. 112"
+   ],
+   "getUp": "idle_lay_to_idle 71",
+   "sleep": "interact_bed_sleep_exist 221",
+   "bark": "idle_bark_04_warning 47",
+   "dig": "idle_one_off_dig 184",
+   "shake": [
+    "idle_shake_1. 137",
+    "idle_shake_2. 81"
+   ],
+   "sniff": "idle_sniff 83",
+   "pickup": "idle_pickup_item 67",
+   "drop": "idle_drop_item 51",
+   "trotCarry": "trot_carry item 17",
+   "runCarry": "run_fwd carry item 13",
+   "paw": "wave 18",
+   "petted": "interact_elmer_pet_1. 31",
+   "jump": "jump 22",
+   "held": "swim_fwd 34",
+   "fall": "fall 1",
+   "land": "land 7"
+  }
+ },
+ {
+  "id": "12-dog",
+  "kind": "dog",
+  "name": "Dog",
+  "file": "dog/12-dog.glb",
+  "thumb": "dog/12-dog.jpg",
+  "author": "stylo0",
+  "authorUrl": "https://sketchfab.com/stylo0",
+  "url": "https://sketchfab.com/3d-models/dog-415a0951b0d148c79ff6277b3f527760",
+  "license": "Free Standard",
+  "animations": 6,
+  "height": 130,
+  "anims": {
+   "idle": "iddle",
+   "walk": "walk",
+   "sniffWalk": "walksent",
+   "run": "run",
+   "jump": "jump",
+   "bark": "attack1"
+  },
+  "yaw": 3.14159
+ },
+ {
+  "id": "13-dashshund-dog",
+  "kind": "dog",
+  "name": "Dashshund Dog",
+  "file": "dog/13-dashshund-dog.glb",
+  "thumb": "dog/13-dashshund-dog.jpg",
+  "author": "spooneystone",
+  "authorUrl": "https://sketchfab.com/spooneystone",
+  "url": "https://sketchfab.com/3d-models/dashshund-dog-cb0abb276cc247f095c0c527db987276",
+  "license": "CC Attribution",
+  "animations": 7,
+  "height": 100,
+  "anims": {
+   "idle": "Armature|Idle_1",
+   "look": "Armature|Idle_2",
+   "walk": "Armature|Walk",
+   "run": "Armature|Run",
+   "jump": "Armature|Jump",
+   "eat": "Armature|Eating"
+  }
+ },
+ {
+  "id": "14-doggo-good",
+  "kind": "dog",
+  "name": "Doggo good!",
+  "file": "dog/14-doggo-good.glb",
+  "thumb": "dog/14-doggo-good.jpg",
+  "author": "Evil_Katz",
+  "authorUrl": "https://sketchfab.com/Evil_Katz",
+  "url": "https://sketchfab.com/3d-models/doggo-good-8d1aa170cf8c41e7aeb75b7b1d70bc46",
+  "license": "CC Attribution",
+  "animations": 5,
+  "height": 120,
+  "anims": {
+   "idle": "0|standing_0",
+   "sit": "0|sitting_0",
+   "rollover": "0|rollover_0",
+   "playdead": "0|play_dead_0",
+   "shake": "0|shake_0"
+  }
+ },
+ {
+  "id": "04-mew-1-0",
+  "kind": "bird",
+  "name": "Mew 1.0",
+  "file": "cat/04-mew-1-0.glb",
+  "thumb": "cat/04-mew-1-0.jpg",
+  "author": "DreamNoms",
+  "authorUrl": "https://sketchfab.com/DreamNoms",
+  "url": "https://sketchfab.com/3d-models/mew-10-835f24b632f84f9abe7a5c55f9d3d69c",
+  "license": "CC Attribution",
+  "animations": 5,
+  "hover": true,
+  "height": 110,
+  "sounds": [
+   "Mew!",
+   "Mew mew~"
+  ],
+  "anims": {
+   "idle": "Idle",
+   "hover": "Idle",
+   "fly": "Fly",
+   "takeoff": "IdleToFlyClean",
+   "land": "FlyToIdle"
+  }
+ },
+ {
+  "id": "15-robin-bird",
+  "kind": "bird",
+  "name": "Robin_ Bird",
+  "file": "bird/15-robin-bird.glb",
+  "thumb": "bird/15-robin-bird.jpg",
+  "author": "Assets_Animated",
+  "authorUrl": "https://sketchfab.com/Assets_Animated",
+  "url": "https://sketchfab.com/3d-models/robin--bird-ec1c6e2250824c3987cde64ea29ccd52",
+  "license": "CC Attribution",
+  "animations": 12,
+  "height": 60,
+  "anims": {
+   "idle": "Robin_Bird_Idle",
+   "look": "Robin_Bird_Idle2",
+   "walk": "Robin_Bird_Walk",
+   "fly": "Robin_Bird_Fly",
+   "eat": [
+    "Robin_Bird_Eat",
+    "Robin_Bird_Eat2",
+    "Robin_Bird_Eat3"
+   ],
+   "call": [
+    "Robin_Bird_Call",
+    "Robin_Bird_Call2"
+   ],
+   "clicked": "Robin_Bird_Hit"
+  }
+ },
+ {
+  "id": "16-owl-high-quality-3d-model",
+  "kind": "bird",
+  "name": "Owl - High-Quality 3D Model",
+  "file": "bird/16-owl-high-quality-3d-model.glb",
+  "thumb": "bird/16-owl-high-quality-3d-model.jpg",
+  "author": "trustylatunde",
+  "authorUrl": "https://sketchfab.com/latunde",
+  "url": "https://sketchfab.com/3d-models/owl-high-quality-3d-model-761067d2fe80480e8b986dd38396ec8c",
+  "license": "CC Attribution",
+  "animations": 30,
+  "height": 90,
+  "sounds": [
+   "Hoo hoo!",
+   "Hoooo..."
+  ],
+  "anims": {
+   "idle": "m0303_00_01_00_stand_idle_01",
+   "look": [
+    "m0303_00_01_00_stand_idle_02",
+    "m0303_00_01_00_stand_idle_03",
+    "m0178_00_00_01_stand_detect_00"
+   ],
+   "walk": "m0303_00_01_00_move_walk_00",
+   "fly": "m0303_00_01_00_move_sky_wing_00",
+   "hover": "m0303_00_01_00_sky_idle_00",
+   "takeoff": "m0303_00_01_00_move_sky_jump_00",
+   "land": "m0303_00_01_00_sky_down_00",
+   "clicked": "m0303_00_01_01_att_00"
+  }
+ },
+ {
+  "id": "17-hummingbird-rigged-6-animations-open-bil",
+  "kind": "bird",
+  "name": "Hummingbird – Rigged, 6 Animations (Open Bill)",
+  "file": "bird/17-hummingbird-rigged-6-animations-open-bil.glb",
+  "thumb": "bird/17-hummingbird-rigged-6-animations-open-bil.jpg",
+  "author": "Animal Animator",
+  "authorUrl": "https://sketchfab.com/animalanimator",
+  "url": "https://sketchfab.com/3d-models/hummingbird-rigged-6-animations-open-bill-d9b448ac1025485e843d54bebf35390a",
+  "license": "CC Attribution",
+  "animations": 6,
+  "height": 50,
+  "anims": {
+   "idle": "03_Perched_Idle_Loop",
+   "hover": "01_Hover_Idle_Loop",
+   "fly": "02_Forward_Flight_Loop",
+   "takeoff": "04_Takeoff",
+   "land": "05_Landing",
+   "eat": "06_Flower_Feeding"
+  }
+ },
+ {
+  "id": "18-sparrow-quirky-series",
+  "kind": "bird",
+  "name": "Sparrow - Quirky Series",
+  "file": "bird/18-sparrow-quirky-series.glb",
+  "thumb": "bird/18-sparrow-quirky-series.jpg",
+  "author": "Omabuarts Studio",
+  "authorUrl": "https://sketchfab.com/omabuarts",
+  "url": "https://sketchfab.com/3d-models/sparrow-quirky-series-289e7db66cfa45fbbe7624b8f48f6c8c",
+  "license": "CC Attribution",
+  "animations": 18,
+  "height": 60,
+  "anims": {
+   "idle": [
+    "Idle_A",
+    "Idle_B"
+   ],
+   "look": "Idle_C",
+   "walk": "Walk",
+   "run": "Run",
+   "fly": "Fly",
+   "jump": "Jump",
+   "eat": "Eat",
+   "sit": "Sit",
+   "clicked": "Clicked",
+   "scared": "Fear"
+  }
+ },
+ {
+  "id": "19-love-birds-parrot",
+  "kind": "bird",
+  "name": "Love Birds Parrot",
+  "file": "bird/19-love-birds-parrot.glb",
+  "thumb": "bird/19-love-birds-parrot.jpg",
+  "author": "Nyilonelycompany",
+  "authorUrl": "https://sketchfab.com/Nyilonelycompany",
+  "url": "https://sketchfab.com/3d-models/love-birds-parrot-e31e1c72cff140158b99172285b40056",
+  "license": "CC Attribution-NonCommercial",
+  "animations": 1,
+  "exclude": true
+ },
+ {
+  "id": "20-parrotbird",
+  "kind": "bird",
+  "name": "Parrotbird",
+  "file": "bird/20-parrotbird.glb",
+  "thumb": "bird/20-parrotbird.jpg",
+  "author": "kenchoo",
+  "authorUrl": "https://sketchfab.com/kenchoo",
+  "url": "https://sketchfab.com/3d-models/parrotbird-97b9d8948f2f4afb8e317b981f16c1f3",
+  "license": "CC Attribution",
+  "animations": 2,
+  "height": 80,
+  "sounds": [
+   "Hello!",
+   "Squawk!",
+   "Pretty bird!"
+  ],
+  "anims": {
+   "idle": "Action idle",
+   "fly": "Armature|Fly01"
+  }
+ },
+ {
+  "id": "21-parrot",
+  "kind": "bird",
+  "name": "Parrot",
+  "file": "bird/21-parrot.glb",
+  "thumb": "bird/21-parrot.jpg",
+  "author": "Royraj Vichaidit",
+  "authorUrl": "https://sketchfab.com/12oyraj",
+  "url": "https://sketchfab.com/3d-models/parrot-ca0ef638ff51459fbc7eb816cab3f050",
+  "license": "CC Attribution",
+  "animations": 1,
+  "exclude": true
+ }
+]

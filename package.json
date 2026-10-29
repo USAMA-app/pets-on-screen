@@ -1,0 +1,14 @@
+{
+  "name": "pets-on-screen",
+  "productName": "Pets On Screen",
+  "version": "0.2.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^45.1.0",
+    "three": "^0.186.1"
+  }
+}
