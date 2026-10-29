@@ -13,7 +13,7 @@ const ready = p => performance.now() > (p.socialAt || 0);
 const rest = (...ps) => { for (const p of ps) p.socialAt = performance.now() + rand(15, 35) * 1000; };
 // Nearest other pet of a kind (any kind if null) within maxDist px horizontally.
 const nearest = (p, kind, maxDist, ok = () => true) => p.world.pets
-  .filter(q => q !== p && !q.held && (!kind || q.kind === kind) && Math.abs(q.x - p.x) < maxDist && ok(q))
+  .filter(q => q !== p && !q.held && !q.gone && !q.leaving && (!kind || q.kind === kind) && Math.abs(q.x - p.x) < maxDist && ok(q))
   .sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
 const gap = (p, q) => 0.45 * (p.height + q.height);  // comfortable distance between two pets
 const awayFrom = (p, q, dist) => p.clampX(p.x + sideOf(p, q.x) * dist);
@@ -110,7 +110,7 @@ const cat = {
         { a: 'trot', alt: 'walk', to: p.clampX(p.x - Math.sign(w.cursor.x - p.x) * 500) },
       ]);
     }
-    if (Math.random() < 0.25) return p.do([{ a: 'look', alt: 'idle', t: 1.5, front: true, say: '...' }, { a: 'walk', to: p.randomX() }]);
+    if (Math.random() < 0.4 - 0.3 * p.affection) return p.do([{ a: 'look', alt: 'idle', t: 1.5, front: true, say: '...' }, { a: 'walk', to: p.randomX() }]);  // aloof, less so when loved
     p.do([{ a: 'greet', alt: ['sit', 'idle'], t: 2.5, front: true, say: p.sound(), hearts: 3 }]);
   },
   stroke(p) { p.do([{ a: 'sit', alt: 'idle', t: 3, front: true, say: 'Purrr...', hearts: 2 }]); },
@@ -128,6 +128,16 @@ const cat = {
     p.do(comeTo(p, 'walk'));
   },
   nap(p) { p.do(napSeq(rand(20, 40))); },
+  ask(p, mood) {  // hungry: sits near you and asks; grumpy: complains once, then sulks with its back turned
+    if (mood === 'grumpy') return cat.sulk(p);
+    const [go, sitDown] = comeTo(p, 'walk');
+    p.do([go, sitDown, { a: 'sit', alt: 'idle', t: 4, front: true, say: pick(['Meow? 🍖', 'Snack break? 🍖', 'Mrrp... 🍖']) },
+          { a: 'standUp', once: true }]);
+  },
+  sulk(p) {
+    p.do([{ a: 'look', alt: 'idle', t: 1, face: 'cursor', say: pick(['Hmph. 🍖', 'MROW! 🍖']) },
+          { a: 'sit', alt: ['lie', 'idle'], t: rand(6, 10), face: 'away' }]);
+  },
   react(p, ev, from) {
     if (ev === 'chased') {
       const escape = awayFrom(p, from, rand(600, 1000));
@@ -217,6 +227,17 @@ const dog = {
   feed(p, treat) { p.do([...eatTreat(p, treat, 'run'), { a: 'sit', alt: 'idle', t: 2, front: true }]); },
   come(p) { p.do(comeTo(p, 'run')); },
   nap(p) { p.do(napSeq(rand(20, 40))); },
+  ask(p, mood) {  // hungry: runs over and begs with puppy eyes; grumpy: one bark, then lies down with its back turned
+    if (mood === 'grumpy') return dog.sulk(p, true);
+    const [go, sitDown] = comeTo(p, 'run'), paw = p.has('paw');
+    p.do([go, sitDown, { a: 'paw', alt: ['sit', 'idle'], once: paw, t: paw ? undefined : 3, front: true,
+                         say: pick(['Woof? 🍖', 'Snack break? 🍖', '*puppy eyes* 🍖']) },
+          { a: 'sit', alt: 'idle', t: 3, front: true }, { a: 'standUp', once: true }]);
+  },
+  sulk(p, bark) {
+    p.do([bark ? { a: 'bark', alt: 'look', once: true, face: 'cursor', say: 'Woof! 🍖' } : { a: 'look', alt: 'idle', t: 1, face: 'cursor', say: '*sigh* 🍖' },
+          { a: 'lieDown', once: true }, { a: 'lie', alt: ['sit', 'idle'], t: rand(6, 10), face: 'away' }, { a: 'getUp', once: true }]);
+  },
   react(p, ev, from) {
     if (ev === 'scared') {  // the cat fought back
       return p.do([{ say: 'Yelp!', a: 'run', alt: ['trot', 'walk'], to: awayFrom(p, from, rand(500, 800)) },
@@ -326,6 +347,18 @@ const bird = {
     ]);
   },
   nap(p) { p.do([...(p.airborne && !p.entry.hover ? land(p, { x: p.x, y: 0 }) : []), { a: 'idle', t: rand(20, 40), zzz: true, speed: 0.4 }]); },
+  ask(p, mood) {  // hungry: lands on your cursor and chirps; grumpy: one squawk, then flies off
+    if (mood === 'grumpy') return bird.sulk(p);
+    p.do([...(p.onGround ? [{ a: 'takeoff', alt: 'fly', fly: true, to: { x: p.x, y: p.ground + 100 } }] : []),
+          ...land(p, cursorPt),
+          { a: 'call', alt: 'idle', once: true, front: true, say: pick(['Tweet? 🍖', 'Snack break? 🍖']) },
+          { a: 'idle', t: 6, front: true, until: q => q.world.cursorStill < 0.2 },
+          { a: 'fly', fly: true, to: p.skyPoint() }]);
+  },
+  sulk(p) {
+    p.do([{ a: 'clicked', alt: ['call', 'idle'], once: true, t: 1.2, say: 'Squawk! 🍖' },
+          ...(p.onGround ? takeoff(p) : [{ a: 'fly', fly: true, to: p.skyPoint() }])]);
+  },
 };
 
 // --- Calibration view (--gallery): every pet walks or flies in place, facing right ---

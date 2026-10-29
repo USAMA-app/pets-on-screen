@@ -68,6 +68,7 @@ const grounds = DISPLAYS.map(d => {
 const groundOf = x => grounds.find(g => x < g.x1) || grounds[grounds.length - 1];
 
 function fx(cls, text, pet, dx = 0) {
+  if (world.quiet) return;  // quiet mode: no bubbles, hearts or zzz
   const el = document.createElement('div');
   el.className = 'fx ' + cls;
   el.textContent = text;
@@ -125,7 +126,8 @@ const world = {
   cursor: new THREE.Vector3(), cursorStill: 0, cursorSpeed: 0, returnedAt: 0,
   get pets() { return pets; },
   claim(item, p) { item.claimedBy ??= p; },
-  eat(item) { if (!item.eaten) { item.eaten = true; removeItem(item); } },
+  eat(item, p) { if (!item.eaten) { item.eaten = true; removeItem(item); p?.fed(); } },
+  quiet: false,
   carry(ball, p) { ball.carrier = p; },
   drop(ball) { ball.carrier = null; ball.vx = ball.vy = 0; },
 };
@@ -153,8 +155,7 @@ function sync(list) {
 }
 
 if (GALLERY === 'play') {  // test playground: a mix of pets with their real characters, not saved
-  const mix = ['07-puma-from-cotw-game', '01-somali-cat-animated-ver-1-2', '09-labrador-dog-from-cotw-game', '11-animated-pitbull-dog',
-               '15-robin-bird', '18-sparrow-quirky-series', '20-parrotbird'];
+  const mix = ['01-somali-cat-animated-ver-1-2', '15-robin-bird'];  // 1 cat + 1 bird
   await sync(mix.map((m, i) => ({ id: 'p' + i, model: m, name: byId[m].name.split(' ')[0], size: 1 })));
 } else if (GALLERY) {  // calibration view: a row of every pet of a kind, all facing right
   const list = catalog.filter(e => !e.exclude && (GALLERY === 'all' || e.kind === GALLERY));
@@ -163,11 +164,39 @@ if (GALLERY === 'play') {  // test playground: a mix of pets with their real cha
 } else {
   await sync(await window.pets.list());
   window.pets.onPets(sync);
+  setInterval(() => window.pets.stats(pets.map(p => ({ id: p.data.id, hunger: +p.hunger.toFixed(3), affection: +p.affection.toFixed(3) }))), 30000);
 }
 
 // --- input ---
 let over = false, press = null, drag = null, lastPt = null, lastMove = performance.now();
-const hitTest = (x, y) => [...pets].reverse().find(p => x > p.rect.x0 && x < p.rect.x1 && y > p.rect.y0 && y < p.rect.y1);
+const hitTest = (x, y) => [...pets].reverse().find(p => !p.gone && !p.leaving && x > p.rect.x0 && x < p.rect.x1 && y > p.rect.y0 && y < p.rect.y1);
+
+// --- "Pets away" button: drag it to any screen edge; click to send every pet off screen, click again to call them back ---
+const awayBtn = document.getElementById('away');
+let away = false, btnDrag = null;
+const inBtn = (x, y) => { const r = awayBtn.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+function placeBtn(x, y) {  // snap to the nearest edge of the screen under (x, y), inside its work area
+  const d = DISPLAYS.find(d => x >= d.x && x < d.x + d.width && y >= d.y && y < d.y + d.height) || DISPLAYS[0];
+  const S = 34, M = 6, cx = Math.min(Math.max(x, d.x + M), d.x + d.width - S - M), cy = Math.min(Math.max(y, d.y + M), d.y + d.height - S - M);
+  const gaps = [[x - d.x, d.x + M, cy], [d.x + d.width - x, d.x + d.width - S - M, cy], [y - d.y, cx, d.y + M], [d.y + d.height - y, cx, d.y + d.height - S - M]];
+  const [, left, top] = gaps.sort((a, b) => a[0] - b[0])[0];
+  awayBtn.style.left = left + 'px';
+  awayBtn.style.top = top + 'px';
+  return { left, top };
+}
+function setAway(v) {
+  away = v;
+  awayBtn.classList.toggle('off', v);
+  awayBtn.innerHTML = v ? '&#x1F3E0;' : '&#x1F43E;';  // house while they're out, paw when they're here
+  for (const p of pets) v ? p.leave() : p.comeBack();
+}
+(() => {
+  let pos = null;
+  try { pos = JSON.parse(localStorage.getItem('awayBtn')); } catch {}
+  const d = DISPLAYS[0];
+  placeBtn(pos?.left ?? d.x + d.width - 40, pos?.top ?? d.y + d.height / 2);  // default: right edge of the first screen
+})();
+awayBtn.addEventListener('mousedown', e => { if (e.button === 0) { btnDrag = { x: e.clientX, y: e.clientY, moved: false }; e.stopPropagation(); } });
 function setOver(v) { if (v !== over) { over = v; window.pets.hover(v); } }
 
 // Polled from the main process, so it works even while clicks pass through the window.
@@ -186,7 +215,7 @@ window.pets.onCursor(pt => {
   lastPt = { ...pt, t: now };
   world.cursorStill = (now - lastMove) / 1000;
   world.cursor.copy(toWorld(pt.x, pt.y));
-  if (!press) setOver(!!hitTest(pt.x, pt.y));
+  if (!press && !btnDrag) setOver(!!hitTest(pt.x, pt.y) || inBtn(pt.x, pt.y));
 });
 
 addEventListener('mousedown', e => {
@@ -194,6 +223,11 @@ addEventListener('mousedown', e => {
   if (pet) press = { pet, x: e.clientX, y: e.clientY };
 });
 addEventListener('mousemove', e => {
+  if (btnDrag) {
+    if (Math.hypot(e.clientX - btnDrag.x, e.clientY - btnDrag.y) > 4) btnDrag.moved = true;
+    if (btnDrag.moved) { awayBtn.style.left = e.clientX - 17 + 'px'; awayBtn.style.top = e.clientY - 17 + 'px'; }
+    return;
+  }
   if (!press) return;
   const c = toWorld(e.clientX, e.clientY);
   const now = performance.now();
@@ -212,22 +246,30 @@ addEventListener('mousemove', e => {
 });
 addEventListener('mouseup', e => {
   if (e.button !== 0) return;
+  if (btnDrag) {
+    if (btnDrag.moved) { try { localStorage.setItem('awayBtn', JSON.stringify(placeBtn(e.clientX, e.clientY))); } catch {} }
+    else setAway(!away);
+    btnDrag = null;
+    return;
+  }
   if (drag) {
     const still = performance.now() - drag.t > 80;  // hand had stopped: just let go, no throw
     drag.pet.release(still ? 0 : drag.vx, still ? 0 : drag.vy);
   }
   else if (press) press.pet.click();
   press = drag = null;
-  setOver(!!hitTest(e.clientX, e.clientY));
+  setOver(!!hitTest(e.clientX, e.clientY) || inBtn(e.clientX, e.clientY));
 });
 addEventListener('contextmenu', e => {
   e.preventDefault();
   const pet = hitTest(e.clientX, e.clientY);
-  if (pet && !GALLERY) window.pets.menu({ id: pet.data.id, name: pet.data.name, kind: pet.kind, size: pet.size,
+  if (pet && !GALLERY) window.pets.menu({ id: pet.data.id, name: pet.data.name, kind: pet.kind, size: pet.size, mood: pet.mood,
                                           fetch: !!pet.brain.fetch });
 });
 
-window.pets.onAction(({ id, action }) => {
+window.pets.onAction(({ id, action, value }) => {
+  if (action === 'quiet') { world.quiet = value; return; }
+  if (action === 'away') return setAway(!away);
   const p = pets.find(q => q.data.id === id);
   if (!p) return;
   if (action === 'pet') p.brain.click(p, 1);

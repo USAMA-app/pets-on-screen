@@ -1,4 +1,4 @@
-"""Download the 3D models listed in models/catalog.json and models/garden/plants.json from Sketchfab.
+"""Download the 3D models listed in models/catalog.json from Sketchfab.
 
 The models are other people's work (see each entry's author and licence), so they aren't in the repo.
 Downloading needs a free Sketchfab account: copy your API token from https://sketchfab.com/settings/password
@@ -23,7 +23,6 @@ def save(url, path, auth=False):
 
 
 entries = json.load(open(os.path.join(ROOT, "catalog.json"), encoding="utf-8"))
-entries += json.load(open(os.path.join(ROOT, "garden", "plants.json"), encoding="utf-8"))
 for e in entries:
     if e.get("exclude"):
         continue

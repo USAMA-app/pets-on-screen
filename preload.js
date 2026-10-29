@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('pets', {
   add: d => ipcRenderer.invoke('add', d),
   update: d => ipcRenderer.invoke('update', d),
   remove: id => ipcRenderer.invoke('remove', id),
+  stats: list => ipcRenderer.send('stats', list),
+  act: a => ipcRenderer.send('act', a),
   onPets: cb => ipcRenderer.on('pets', (_, list) => cb(list)),
   hover: over => ipcRenderer.send('hover', over),
   menu: state => ipcRenderer.send('menu', state),

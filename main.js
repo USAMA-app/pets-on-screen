@@ -1,5 +1,6 @@
 // Pets On Screen - a transparent, always-on-top, click-through overlay for 3D pets, plus a tray icon and a pet picker.
 const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, screen, shell } = require('electron');
+const { spawn } = require('child_process');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -42,6 +43,40 @@ function desktop() {
 }
 let area;
 
+// Hide the pets while another app is full screen (video, game, presentation): a small PowerShell loop checks
+// whether the foreground window covers its whole monitor. (Windows' own "busy" state can't be used: this
+// overlay itself counts as full screen.) ponytail: hides on every screen, even if only one is full screen.
+function watchFullscreen() {
+  const cs = `using System; using System.Runtime.InteropServices; using System.Text;
+public static class FS {
+  [StructLayout(LayoutKind.Sequential)] public struct R { public int L, T, Ri, B; }
+  [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr h, out R r);
+  [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
+  [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr h, StringBuilder s, int n);
+  public static int Check(uint self) {
+    IntPtr h = GetForegroundWindow(); if (h == IntPtr.Zero) return 0;
+    uint pid; GetWindowThreadProcessId(h, out pid); if (pid == self) return 0;
+    var c = new StringBuilder(64); GetClassName(h, c, 64); string n = c.ToString();
+    if (n == "Progman" || n == "WorkerW" || n == "Shell_TrayWnd" || n == "Shell_SecondaryTrayWnd") return 0;
+    R r; GetWindowRect(h, out r);
+    var b = System.Windows.Forms.Screen.FromHandle(h).Bounds;
+    return (r.L <= b.Left && r.T <= b.Top && r.Ri >= b.Right && r.B >= b.Bottom) ? 1 : 0;
+  }
+}`;
+  const script = `Add-Type -ReferencedAssemblies System.Windows.Forms -TypeDefinition @'\n${cs}\n'@\n` +
+                 `while ($true) { [Console]::Out.WriteLine([FS]::Check(${process.pid})); Start-Sleep -Seconds 2 }`;
+  const ps = spawn('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(script, 'utf16le').toString('base64')],
+                   { windowsHide: true });
+  ps.stdout.on('data', buf => {
+    const full = String(buf).trim().split(/\s+/).pop() === '1';
+    if (overlay.isDestroyed()) return;
+    if (full && overlay.isVisible()) overlay.hide();
+    else if (!full && !overlay.isVisible()) overlay.showInactive();
+  });
+  app.on('will-quit', () => ps.kill());
+}
+
 app.whenReady().then(() => {
   pets = loadPets();
   const gallery = process.argv.find(a => a.startsWith('--gallery'));
@@ -76,11 +111,15 @@ app.whenReady().then(() => {
   tray.setToolTip('Pets On Screen');
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Adopt a pet / My pets...', click: openPicker },
+    { label: 'Pets away / come back', click: () => overlay.webContents.send('action', { action: 'away' }) },
+    { label: 'Quiet mode (no bubbles or asking)', type: 'checkbox',
+      click: item => overlay.webContents.send('action', { action: 'quiet', value: item.checked }) },
     { type: 'separator' },
     { label: 'Quit Pets On Screen', click: () => app.quit() },
   ]));
   tray.on('click', openPicker);
   if (!pets.length && !gallery) openPicker();
+  watchFullscreen();
 });
 
 ipcMain.handle('catalog', () => catalog);
@@ -90,12 +129,18 @@ ipcMain.handle('update', (_, d) => { Object.assign(pets.find(p => p.id === d.id)
 ipcMain.handle('remove', (_, id) => { pets = pets.filter(p => p.id !== id); savePets(); });
 ipcMain.on('hover', (_, over) => overlay.setIgnoreMouseEvents(!over, { forward: true }));
 ipcMain.on('picker', openPicker);
+ipcMain.on('act', (_, a) => overlay.webContents.send('action', a));  // e.g. Feed from the picker
+ipcMain.on('stats', (_, list) => {  // hunger/affection from the overlay: save, and refresh the picker's list
+  for (const s of list) Object.assign(pets.find(p => p.id === s.id) || {}, s);
+  fs.writeFileSync(storeFile(), JSON.stringify(pets, null, 2));
+  if (picker && !picker.isDestroyed()) picker.webContents.send('pets', pets);
+});
 
 ipcMain.on('menu', (_, s) => {
   const act = action => () => overlay.webContents.send('action', { id: s.id, action });
   const update = d => () => { Object.assign(pets.find(p => p.id === s.id) || {}, d); savePets(); };
   Menu.buildFromTemplate([
-    { label: `${s.name} the ${s.kind}`, enabled: false },
+    { label: `${s.name} the ${s.kind}${s.mood === 'content' ? '' : ` (${s.mood}!)`}`, enabled: false },
     { type: 'separator' },
     { label: 'Pet', click: act('pet') },
     { label: 'Feed', click: act('feed') },

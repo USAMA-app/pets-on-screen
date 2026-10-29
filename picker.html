@@ -12,7 +12,7 @@
   h2 { margin: 26px 0 10px; font-size: 16px; }
   .muted { color: var(--muted); }
   .mine { display: grid; gap: 8px; }
-  .row { display: grid; grid-template-columns: 56px 1fr 180px auto; gap: 12px; align-items: center; background: var(--card);
+  .row { display: grid; grid-template-columns: 56px 1fr 120px 180px auto auto; gap: 12px; align-items: center; background: var(--card);
          border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
   .row img { width: 56px; height: 40px; object-fit: cover; border-radius: 6px; }
   .row input[type=text] { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; width: 100%; }
@@ -44,6 +44,7 @@
 <script>
   const KINDS = { cat: 'Cats', dog: 'Dogs', bird: 'Birds & flyers' };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const mood = h => h >= 0.85 ? 'Grumpy, feed me 🍖' : h >= 0.5 ? 'Hungry 🍖' : 'Happy';
   const shortName = name => name.replace(/\(.*?\)|animated|rigged|from .*|ver .*|[-–].*|\d+(\.\d+)*|3d model|high-quality|quirky series|_/gi, ' ')
                                 .replace(/\s+/g, ' ').trim() || 'Pet';
   let catalog = [], kind = 'cat';
@@ -54,14 +55,17 @@
       <div class="row" data-id="${p.id}">
         <img src="models/${esc(byId[p.model]?.thumb || '')}">
         <input type="text" value="${esc(p.name)}" maxlength="24" aria-label="Name">
+        <span class="muted">${mood(p.hunger || 0)}</span>
         <label class="muted">Size <input type="range" min="0.6" max="1.6" step="0.1" value="${p.size || 1}"></label>
-        <button class="ghost">Send home</button>
+        <button class="ghost feed">Feed</button>
+        <button class="ghost home">Send home</button>
       </div>`).join('') : '<div class="muted">No pets yet. Adopt one below.</div>';
     for (const row of document.querySelectorAll('.row')) {
       const id = row.dataset.id;
       row.querySelector('input[type=text]').onchange = e => window.pets.update({ id, name: e.target.value.trim() || 'Pet' });
       row.querySelector('input[type=range]').onchange = e => window.pets.update({ id, size: +e.target.value });
-      row.querySelector('button').onclick = () => window.pets.remove(id);
+      row.querySelector('.home').onclick = () => window.pets.remove(id);
+      row.querySelector('.feed').onclick = () => window.pets.act({ id, action: 'feed' });
     }
   }
 

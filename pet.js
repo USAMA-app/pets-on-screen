@@ -11,6 +11,10 @@ const FALLBACK_SPEED = { walk: 80, sniffWalk: 60, sneak: 50, trot: 170, trotCarr
 const SOUNDS = { cat: ['Meow!', 'Mrrp?', 'Meow~'], dog: ['Woof!', 'Arf!', 'Woof woof!'], bird: ['Tweet!', 'Chirp!', 'Tweet tweet!'] };
 const GRAB_SOUNDS = { cat: ['Mrrow?!', '!?', 'Mew!'], dog: ['Yip!', 'Woof?!', '*wiggles*'], bird: ['Tweet?!', 'Eek!', 'Chirp?!'] };
 const GAITS = ['walk', 'sniffWalk', 'sneak', 'trot', 'trotCarry', 'run', 'runCarry'];
+// Needs, tuned as a gentle break reminder: minutes of you being at the computer until a pet asks for food.
+const HUNGRY_AFTER_MIN = { cat: 70, dog: 60, bird: 50 };
+const HUNGRY = 0.5, GRUMPY = 0.85;  // hunger levels (0 = just fed, 1 = starving; grumpy ~40 min after hungry)
+const AWAY_S = 300;  // no mouse movement for this long = you're away: needs pause
 
 const loader = new GLTFLoader();
 const cache = new Map();
@@ -148,6 +152,9 @@ export class Pet {
     this.rub = 0;
     this.zzzT = 0;
     this.vx = 0;
+    this.hunger = data.hunger ?? 0.1;
+    this.affection = data.affection ?? 0.5;
+    this.askAt = performance.now() + 60000;  // don't nag right after starting
     this.tilt = this.tiltVel = this.squash = this.handVx = 0;
     this.root.rotation.order = 'ZYX';
   }
@@ -218,7 +225,13 @@ export class Pet {
 
   nextStep() {
     for (let guard = 0; guard < 20; guard++) {
-      if (!this.queue.length) this.brain.next(this);
+      if (!this.queue.length) {
+        const now = performance.now();
+        if (this.mood !== 'content' && now > this.askAt && !this.world.quiet && !this.leaving && this.brain.ask) {
+          this.askAt = now + (this.mood === 'grumpy' ? rand(90, 180) : rand(120, 240)) * 1000;
+          this.brain.ask(this, this.mood);
+        } else this.brain.next(this);
+      }
       const s = this.queue.shift();
       if (!s) return null;
       this.startStep(s);
@@ -243,7 +256,7 @@ export class Pet {
     const raw = typeof s.to === 'function' ? s.to(this) : s.to;
     if (raw == null) return true;
     if (s.fly) {
-      const tx = this.clampX(raw.x), ty = Math.max(this.world.groundAt(tx), raw.y);
+      const tx = s.exit ? raw.x : this.clampX(raw.x), ty = Math.max(this.world.groundAt(tx), raw.y);
       const dx = tx - this.x, dy = ty - this.y, d = Math.hypot(dx, dy);
       const stepLen = (s.speed2 || FLY_SPEED) * this.size * dt;
       if (Math.abs(dx) > 2) this.dir = Math.sign(dx);
@@ -254,8 +267,8 @@ export class Pet {
     }
     // A plain number target (a wander) may lie past the outer edge: the pet walks off and comes back in on the
     // far side. Targets that follow something (cursor, another pet, food) stay on screen.
-    const wander = typeof raw === 'number';
-    const tx = wander ? raw : this.clampX(typeof raw === 'object' ? raw.x : raw);
+    const wander = typeof raw === 'number' && !s.exit;
+    const tx = wander || s.exit ? raw : this.clampX(typeof raw === 'object' ? raw.x : raw);
     const dx = tx - this.x;
     const stepLen = (this.speeds[s.action] ?? FALLBACK_SPEED[s.action] ?? 80) * (s.speedMul || 1) * this.size * dt;
     if (Math.abs(dx) <= Math.max(stepLen, s.near || 0)) { if (!s.near) this.x = tx; return true; }
@@ -288,11 +301,11 @@ export class Pet {
     return { x, y: rand(g + 150, Math.max(g + 160, this.world.topAt(x) - 120)) };
   }
   faceCursor() { this.faceTo('cursor'); }
-  faceTo(f) {  // 'cursor' or another pet
-    const dx = (f === 'cursor' ? this.world.cursor.x : f.x) - this.x;
-    if (Math.abs(dx) > 20) this.dir = Math.sign(dx);
+  faceTo(f) {  // 'cursor', 'away' (back turned to the cursor) or another pet
+    const dx = (f === 'cursor' || f === 'away' ? this.world.cursor.x : f.x) - this.x;
+    if (Math.abs(dx) > 20) this.dir = Math.sign(dx) * (f === 'away' ? -1 : 1);
   }
-  react(event, from) { if (!this.held && !this.world.gallery) this.brain.react?.(this, event, from); }
+  react(event, from) { if (!this.held && !this.gone && !this.leaving && !this.world.gallery) this.brain.react?.(this, event, from); }
   cursorDist() { return Math.hypot(this.world.cursor.x - this.x, this.world.cursor.y - this.y); }
   get sleeping() { return !!this.step?.zzz; }
 
@@ -301,14 +314,47 @@ export class Pet {
   sound() { return pick(this.sounds); }
 
   // --- interaction entry points, called by renderer.js ---
+  // "Pets away" quick action: run or fly off the nearest outer edge, then vanish; come back the same way.
+  halfLength() { const b = this.localBox; return 0.5 * Math.max(b.max.x - b.min.x, b.max.z - b.min.z) * this.baseScale * this.size; }
+  offscreenX(side) { const { edgeL, edgeR } = this.world; return side < 0 ? edgeL - this.halfLength() - 40 : edgeR + this.halfLength() + 40; }
+  leave() {
+    if (this.gone || this.leaving) return;
+    const { edgeL, edgeR } = this.world;
+    this.held = false;
+    this.leaving = true;
+    this.side = this.x - edgeL < edgeR - this.x ? -1 : 1;
+    const out = this.offscreenX(this.side);
+    this.do([this.flyer ? { a: 'fly', fly: true, exit: true, to: { x: out, y: this.ground + 300 } }
+                        : { a: 'run', alt: ['trot', 'walk'], exit: true, to: out },
+             { fn: q => { q.gone = true; q.leaving = false; q.root.visible = false; } }]);
+  }
+  comeBack() {
+    if (!this.gone && !this.leaving) return;
+    this.gone = this.leaving = false;
+    this.root.visible = true;
+    const side = this.side || 1, inX = this.x = this.offscreenX(side);
+    const dest = inX - side * (this.halfLength() + 200 + Math.random() * 300);
+    this.y = this.ground + (this.flyer ? 250 : 0);
+    this.do([this.flyer ? { a: 'fly', fly: true, exit: true, to: { x: dest, y: this.ground + 200 } }
+                        : { a: 'trot', alt: ['run', 'walk'], exit: true, to: dest },
+             { a: 'look', alt: 'idle', t: 1, front: true, say: this.sound() }]);
+  }
+
+  get mood() { return this.hunger >= GRUMPY ? 'grumpy' : this.hunger >= HUNGRY ? 'hungry' : 'content'; }
+  fed() { this.hunger = 0; this.affection = Math.min(1, this.affection + 0.1); }
+  loved(n = 0.05) { this.affection = Math.min(1, this.affection + n); }
+
   click() {
+    if (this.leaving) return;
+    if (this.mood === 'grumpy' && this.brain.sulk) return this.brain.sulk(this);  // no tricks until fed
+    this.loved();
     const now = performance.now();
     this.clicks = this.clicks.filter(t => now - t < 3000).concat(now);
     this.brain.click(this, this.clicks.length);
   }
   stroke(dx) {
     this.rub += Math.abs(dx);
-    if (this.rub > 500) { this.rub = 0; this.brain.stroke(this); }
+    if (this.rub > 500) { this.rub = 0; this.loved(); this.brain.stroke(this); }
   }
   // --- being carried: hangs from the grab point and swings like a pendulum; released with the hand's momentum ---
   grab() {
@@ -331,6 +377,7 @@ export class Pet {
   }
 
   update(dt) {
+    if (this.gone) return;  // away: off screen, not drawn, needs paused
     // Walking onto a neighbouring screen whose floor is a little higher or lower: just step.
     if (!this.flyer && !this.held && this.vy === 0 && Math.abs(this.y - this.ground) < 30) this.y = this.ground;
     let tiltTarget = 0;
@@ -361,6 +408,10 @@ export class Pet {
     } else {
       this.brain.tick?.(this, dt);
       this.runStep(dt);
+    }
+    if (!this.world.gallery && this.world.cursorStill < AWAY_S) {  // needs only change while you're here
+      this.hunger = Math.min(1, this.hunger + dt * HUNGRY / (HUNGRY_AFTER_MIN[this.kind] * 60));
+      this.affection = Math.max(0, this.affection - dt / (4 * 3600));
     }
     this.rub *= 0.98;
     this.mixer.update(dt);

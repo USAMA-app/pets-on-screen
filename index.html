@@ -10,6 +10,11 @@
   .heart { color: #ff4d6d; font-size: 24px; animation: rise 1.4s ease-out forwards; text-shadow: 0 1px 3px #0005; }
   .zzz { color: #8fb0ff; animation: rise 2s ease-out forwards; text-shadow: 0 1px 3px #0005; }
   .bubble { background: #fff; color: #222; padding: 4px 12px; border-radius: 14px; box-shadow: 0 2px 8px #0005; animation: pop 1.6s ease-out forwards; }
+  #away { position: fixed; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #fff6; background: #0003;
+          backdrop-filter: blur(4px); color: #fff; font-size: 17px; line-height: 32px; text-align: center; cursor: grab;
+          opacity: 0.45; transition: opacity .2s, transform .2s; box-shadow: 0 2px 8px #0004; }
+  #away:hover { opacity: 1; transform: scale(1.1); }
+  #away.off { opacity: 0.8; background: #e0612f99; }
   @keyframes rise { to { transform: translate(-50%, -260%) scale(1.3); opacity: 0; } }
   @keyframes pop { 0% { transform: translate(-50%, -100%) scale(.5); } 15% { transform: translate(-50%, -100%) scale(1); } 85% { opacity: 1; } 100% { opacity: 0; } }
 </style>
@@ -18,6 +23,7 @@
 </script>
 </head>
 <body>
+<div id="away" title="Pets away / come back (drag to move)">&#x1F43E;</div>
 <script type="module" src="renderer.js"></script>
 </body>
 </html>
